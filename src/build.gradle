@@ -1,0 +1,73 @@
+buildscript {
+    repositories {
+        maven { url "$rootDir/fake_repo" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'smarter.ecommerce.plugin', name: 'gradle-plugin-depcheck', version: '3.0.0'
+    }
+}
+
+configurations {
+    classycle
+}
+
+repositories {
+    maven { url "$rootDir/fake_repo" }
+    mavenCentral()
+}
+
+apply plugin: 'smarter.ecommerce.depcheck'
+apply plugin: 'scala'
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+apply plugin: 'java-gradle-plugin'
+
+group = 'smarter.ecommerce.plugin'
+version="3.0.0"
+
+sourceSets {
+    main {
+        scala  { srcDirs += ['src/main/all'] }
+        java  { srcDirs = [] }
+    }
+    test {
+        scala  { srcDirs += ['src/test/all'] }
+        java  { srcDirs = [] }
+        groovy { srcDirs += ['src/test/all'] }
+    }
+}
+
+compileTestGroovy.mustRunAfter compileTestScala
+
+
+
+dependencies {
+    compile gradleApi()
+
+    compile "org.bithill:classycle:1.4.4"
+    classycle "classycle:classycle:1.4.2"
+
+    compile 'org.scala-lang:scala-library:2.12.2'
+    testCompile("com.smarter-ecommerce.smec-commons:smec-commons-testsupport:+") {
+        exclude module: "groovy-all"
+    }
+    testCompile('org.gradle:gradle-tooling-api:3.5')
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude module: "groovy-all"
+    }
+}
+
+sourceSets {
+    main {
+        scala  { srcDirs += ['src/main/all'] }
+        java  { srcDirs = [] }
+    }
+    test {
+        scala  { srcDirs += ['src/test/all'] }
+        groovy { srcDirs += ['src/test/all'] }
+    }
+}
+
+apply from "architecture.gradle"

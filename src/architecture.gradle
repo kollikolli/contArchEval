@@ -1,0 +1,12 @@
+//make sure your build.gradle is setup with the correct plugin
+//the configuration for the project uses the "scala" and "java" plugin
+
+//this task is executed by the build tool
+task depCheck(type: smarter.ecommerce.gradle.depcheck.DepCheckTask, dependsOn: classes) {
+    mainPackage = "microservice"
+
+    classesDir = sourceSets.test.output.classesDir
+    classycleClasspath = configurations.classycle
+    layering = "app -> ui -> api -> workflow -> logic -> data -> util"
+    crossContext = "context2 -> context1"
+}
